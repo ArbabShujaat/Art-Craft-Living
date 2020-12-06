@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "221314742535",
+    "firebase_url": "https://artcraftliving-b287b.firebaseio.com",
+    "project_id": "artcraftliving-b287b",
+    "storage_bucket": "artcraftliving-b287b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:221314742535:android:8943b84f0cc446270b2da2",
+        "android_client_info": {
+          "package_name": "com.ArtCraftLiving.artCraftLiving"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "221314742535-gfej3vsitvghdpvps10ob2gf497vjhos.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ArtCraftLiving.artCraftLiving",
+            "certificate_hash": "f82ff23338f3cf9f479bfd1fb610bb4b748c2f14"
+          }
+        },
+        {
+          "client_id": "221314742535-hv9kgiu7vmbml70f1taapdgdl17abpmu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDci04kAWbpH-01mSKH0rIDEj5o6BJUZ0Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "221314742535-hv9kgiu7vmbml70f1taapdgdl17abpmu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
