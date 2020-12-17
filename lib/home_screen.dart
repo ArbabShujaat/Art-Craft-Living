@@ -3,6 +3,7 @@ import 'package:artCraftLiving/login/login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -149,6 +150,20 @@ class _HomeState extends State<Home> {
                     FirebaseAuth.instance.signOut();
                     var prefs = await SharedPreferences.getInstance();
                     prefs.clear();
+                    final cacheDir = await getTemporaryDirectory();
+
+                    listUserDetail.clear();
+
+                    if (cacheDir.existsSync()) {
+                      cacheDir.deleteSync(recursive: true);
+                    }
+
+                    final appDir = await getApplicationSupportDirectory();
+
+                    if (appDir.existsSync()) {
+                      appDir.deleteSync(recursive: true);
+                    }
+
                     Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(builder: (context) => LogIn()),
                         (Route<dynamic> route) => false);

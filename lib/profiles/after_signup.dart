@@ -62,10 +62,10 @@ class _AfterSignupState extends State<AfterSignup> {
                                   child: Center(
                                     child: SizedBox(
                                       width: MediaQuery.of(context).size.width -
-                                          200,
+                                          300,
                                       height: 100,
                                       child: AutoSizeText(
-                                        listUserDetail[userIndex].about,
+                                        userDetails.about,
                                         style: TextStyle(fontSize: 18.0),
                                         maxLines: 100,
                                       ),
@@ -97,34 +97,38 @@ class _AfterSignupState extends State<AfterSignup> {
                               ],
                             ),
                           if (!_showabout)
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width - 200,
-                                  height: 20,
-                                  child: AutoSizeText(
-                                    listUserDetail[userIndex].about,
-                                    style: TextStyle(fontSize: 18.0),
-                                    maxLines: 1,
+                            Container(
+                              width: MediaQuery.of(context).size.width / 1.8,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width - 300,
+                                    height: 20,
+                                    child: AutoSizeText(
+                                      userDetails.about,
+                                      style: TextStyle(fontSize: 18.0),
+                                      maxLines: 1,
+                                    ),
                                   ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      _showabout = true;
-                                    });
-                                  },
-                                  child: Text(
-                                    'See more',
-                                    style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                )
-                              ],
+                                  Spacer(),
+                                  InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        _showabout = true;
+                                      });
+                                    },
+                                    child: Text(
+                                      'See more',
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                         ],
                       ),

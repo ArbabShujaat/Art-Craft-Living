@@ -410,33 +410,28 @@ class _SignUpState extends State<SignUp> {
           'points': "0",
         });
         print(3);
-        try {
-          await Firestore.instance
-              .collection("Users")
-              .where("userEmail", isEqualTo: emailController.text)
 
-              // ignore: deprecated_member_use
-              .getDocuments()
-              .then((value) => {
-                    userDetails = UserDetails(
-                        userEmail: value.documents[0]["userEmail"],
-                        about: value.documents[0]["userAbout"],
-                        bonusCredit: value.documents[0]["bonusCredit"],
-                        soldCredit: value.documents[0]["soldCredit"],
-                        points: value.documents[0]["points"],
-                        userUid: value.documents[0]["userUid"],
-                        username: value.documents[0]["userName"],
-                        userpic: value.documents[0]["userImage"],
-                        instagram: value.documents[0]["instagram"],
-                        userDocid: value.documents[0].documentID)
-                  });
-        } catch (e) {
-          print(e);
-        }
+        await Firestore.instance
+            .collection("Users")
+            .where("userEmail", isEqualTo: emailController.text)
+            .getDocuments()
+            .then((value) => {
+                  userDetails = UserDetails(
+                      userEmail: value.documents[0]["userEmail"],
+                      about: value.documents[0]["userAbout"],
+                      bonusCredit: value.documents[0]["bonusCredit"],
+                      soldCredit: value.documents[0]["soldCredit"],
+                      points: value.documents[0]["points"],
+                      userUid: value.documents[0]["userUid"],
+                      username: value.documents[0]["userName"],
+                      userpic: value.documents[0]["userImage"],
+                      instagram: value.documents[0]["instagram"],
+                      userDocid: value.documents[0].documentID)
+                });
 
         print(4);
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => BuyApp()),
+            MaterialPageRoute(builder: (context) => AfterSignup()),
             (Route<dynamic> route) => false);
 
         setState(() {
