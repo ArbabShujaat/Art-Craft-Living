@@ -1,13 +1,16 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:artCraftLiving/Admin/Home.dart';
 import 'package:artCraftLiving/Admin/SoldPaymentRequests.dart';
 import 'package:artCraftLiving/constant.dart';
 import 'package:artCraftLiving/home_screen.dart';
 import 'package:artCraftLiving/login/login.dart';
+import 'package:artCraftLiving/login/sign_up.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,6 +30,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
     Timer(const Duration(milliseconds: 2000), () async {
       var prefs = await SharedPreferences.getInstance();
+
+      // var appDir = (await getTemporaryDirectory()).path;
+      // new Directory(appDir).delete(recursive: true);
 
       await FirebaseFirestore.instance
           .collection("BonusAmount")
@@ -61,18 +67,18 @@ class _SplashScreenState extends State<SplashScreen> {
       } else {
         final extractedUserData =
             json.decode(prefs.getString('userData')) as Map<String, Object>;
-        // userEmail = extractedUserData['userEmail'];
-        // userUid = extractedUserData['userUid'];
+
         await FirebaseFirestore.instance
             .collection("Users")
             .where("userEmail", isEqualTo: extractedUserData['userEmail'])
-
-            // ignore: deprecated_member_use
+            .where("verified", isEqualTo: true)
             .getDocuments()
             .then((value) => {
                   userDetails = UserDetails(
                     instagram: value.documents[0]["instagram"],
                     about: value.documents[0]["userAbout"],
+                    verified: value.documents[0]["verified"],
+                    firstTime: value.documents[0]["firstTime"],
                     userEmail: value.documents[0]["userEmail"],
                     bonusCredit: value.documents[0]["bonusCredit"],
                     soldCredit: value.documents[0]["soldCredit"],

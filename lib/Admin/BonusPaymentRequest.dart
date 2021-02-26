@@ -12,6 +12,7 @@ class BonusPaymentRequest extends StatefulWidget {
 
 class _BonusPaymentRequestState extends State<BonusPaymentRequest> {
   bool _loading = true;
+  bool _buttonLoading = false;
   @override
   Future<void> didChangeDependencies() async {
     listpaymentRequestSold.clear();
@@ -128,75 +129,104 @@ class _BonusPaymentRequestState extends State<BonusPaymentRequest> {
                         title: Text('Ammount to be transfered'),
                         subtitle: Text(listpaymentRequestSold[index].amount),
                       ),
-                      Row(
-                        children: [
-                          FlatButton(
-                              onPressed: () async {
-                                await FirebaseFirestore.instance
-                                    .collection('Users')
-                                    .where('userUid',
-                                        isEqualTo: listpaymentRequestSold[index]
-                                            .userUid)
-                                    .getDocuments()
-                                    .then((value) async => {
-                                          await FirebaseFirestore.instance
-                                              .collection('Users')
-                                              .document(
-                                                  listpaymentRequestSold[index]
-                                                      .userDocid)
-                                              .update({
-                                            'bonusCredit': (int.parse(
-                                                        value.documents[0]
-                                                            ['bonusCredit']) +
-                                                    int.parse(
-                                                        listpaymentRequestSold[
-                                                                index]
-                                                            .amount))
-                                                .toString(),
-                                          }),
+                      Container(
+                        child: _buttonLoading
+                            ? Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: CircularProgressIndicator(),
+                                ),
+                              )
+                            : Row(
+                                children: [
+                                  FlatButton(
+                                      onPressed: () async {
+                                        setState(() {
+                                          _buttonLoading = true;
                                         });
+                                        await FirebaseFirestore.instance
+                                            .collection('Users')
+                                            .where('userUid',
+                                                isEqualTo:
+                                                    listpaymentRequestSold[
+                                                            index]
+                                                        .userUid)
+                                            .getDocuments()
+                                            .then((value) async => {
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection('Users')
+                                                      .document(
+                                                          listpaymentRequestSold[
+                                                                  index]
+                                                              .userDocid)
+                                                      .update({
+                                                    'bonusCredit': (int.parse(value
+                                                                    .documents[0]
+                                                                [
+                                                                'bonusCredit']) +
+                                                            int.parse(
+                                                                listpaymentRequestSold[
+                                                                        index]
+                                                                    .amount))
+                                                        .toString(),
+                                                  }),
+                                                });
 
-                                await FirebaseFirestore.instance
-                                    .collection('PaymentRequestsSold')
-                                    .document(
-                                        listpaymentRequestSold[index].docid)
-                                    .update({
-                                  'accepted': true,
-                                });
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          BonusPaymentRequest()),
-                                );
-                              },
-                              child: Text(
-                                "Decline",
-                                style:
-                                    TextStyle(fontSize: 20, color: Colors.red),
-                              )),
-                          FlatButton(
-                              onPressed: () async {
-                                await FirebaseFirestore.instance
-                                    .collection('PaymentRequestsSold')
-                                    .document(
-                                        listpaymentRequestSold[index].docid)
-                                    .update({
-                                  'accepted': true,
-                                });
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          BonusPaymentRequest()),
-                                );
-                              },
-                              child: Text(
-                                "Accept",
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.green),
-                              )),
-                        ],
+                                        await FirebaseFirestore.instance
+                                            .collection('PaymentRequestsSold')
+                                            .document(
+                                                listpaymentRequestSold[index]
+                                                    .docid)
+                                            .update({
+                                          'accepted': true,
+                                        });
+                                        setState(() {
+                                          _buttonLoading = false;
+                                        });
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  BonusPaymentRequest()),
+                                        );
+                                      },
+                                      child: Text(
+                                        "Decline",
+                                        style: TextStyle(
+                                            fontSize: 20, color: Colors.red),
+                                      )),
+                                  FlatButton(
+                                      onPressed: () async {
+                                        setState(() {
+                                          _buttonLoading = true;
+                                        });
+                                        await FirebaseFirestore.instance
+                                            .collection(
+                                                'PaymentRequestsPurchased')
+                                            .document(
+                                                listpaymentRequestSold[index]
+                                                    .docid)
+                                            .update({
+                                          'accepted': true,
+                                        });
+                                        setState(() {
+                                          _buttonLoading = false;
+                                        });
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  BonusPaymentRequest()),
+                                        );
+                                      },
+                                      child: Text(
+                                        "Accept",
+                                        style: TextStyle(
+                                            fontSize: 20, color: Colors.green),
+                                      )),
+                                ],
+                              ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0),

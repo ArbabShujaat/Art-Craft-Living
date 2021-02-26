@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:artCraftLiving/Admin/Home.dart';
 import 'package:artCraftLiving/Model/model.dart';
-import 'package:artCraftLiving/Payment/PaymnetMain.dart';
-import 'package:artCraftLiving/login/buyapp.dart';
 import 'package:artCraftLiving/login/forgot_password.dart';
 import 'package:artCraftLiving/login/sign_up.dart';
 import 'package:artCraftLiving/profiles/after_signup.dart';
@@ -16,9 +14,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant.dart';
 import '../home_screen.dart';
+import '../main.dart';
 
-class LogIn extends StatefulWidget {
-  LogIn({Key key}) : super(key: key);
+class LogIn2 extends StatefulWidget {
+  LogIn2({Key key}) : super(key: key);
 
   @override
   _LogInState createState() => _LogInState();
@@ -26,11 +25,11 @@ class LogIn extends StatefulWidget {
 
 bool loginLoading = false;
 final FirebaseAuth _auth = FirebaseAuth.instance;
-TextEditingController emailController = TextEditingController();
-TextEditingController passwordController = TextEditingController();
+TextEditingController _emailController = TextEditingController();
+TextEditingController _passwordController = TextEditingController();
 GlobalKey<FormState> _key = GlobalKey();
 
-class _LogInState extends State<LogIn> {
+class _LogInState extends State<LogIn2> {
   bool _showPassword = false;
 
   @override
@@ -47,11 +46,21 @@ class _LogInState extends State<LogIn> {
                 image: AssetImage('assets/logo.jpeg'),
                 height: 150,
               ),
-              SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                child: Text(
+                  "A email verification is sent to your email kindly  verify your email and login here",
+                  style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
+                ),
+              ),
+              SizedBox(height: 10),
               Opacity(
                 opacity: 0.8,
                 child: Container(
-                  padding: EdgeInsets.all(30),
+                  padding: EdgeInsets.all(10),
                   color: Colors.white,
                   child: Form(
                     key: _key,
@@ -60,7 +69,7 @@ class _LogInState extends State<LogIn> {
                         _textInput('Email Address', Icons.email),
                         SizedBox(height: 20),
                         TextFormField(
-                          controller: passwordController,
+                          controller: _passwordController,
                           validator: (String val) {
                             if (val.isEmpty) {
                               return 'Email must not be empty';
@@ -92,7 +101,7 @@ class _LogInState extends State<LogIn> {
                         SizedBox(height: 10),
                         GestureDetector(
                           onTap: () {
-                            Navigator.pushReplacement(
+                            Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => ForgotPassword(),
@@ -112,37 +121,6 @@ class _LogInState extends State<LogIn> {
                 ),
               ),
               SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Don\'t have account ? ',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PaymentMain(),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border(bottom: BorderSide()),
-                      ),
-                      child: Text(
-                        "Sign Up",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(height: 30),
             ],
           ),
         ));
@@ -157,8 +135,8 @@ class _LogInState extends State<LogIn> {
                 setState(() {
                   loginLoading = true;
                 });
-                if (emailController.text == adminEmail &&
-                    passwordController.text == adminPassword) {
+                if (_emailController.text == adminEmail &&
+                    _passwordController.text == adminPassword) {
                   var prefs = await SharedPreferences.getInstance();
                   final userData = json.encode(
                     {
@@ -178,14 +156,14 @@ class _LogInState extends State<LogIn> {
                 }
 
                 final bool isValid =
-                    EmailValidator.validate(emailController.text);
+                    EmailValidator.validate(_emailController.text);
                 if (!isValid) {
                   return 0;
                 }
                 try {
                   final User user = (await _auth.signInWithEmailAndPassword(
-                    email: emailController.text,
-                    password: passwordController.text,
+                    email: _emailController.text,
+                    password: _passwordController.text,
                   ))
                       .user;
 
@@ -198,7 +176,7 @@ class _LogInState extends State<LogIn> {
                               side: BorderSide(
                                 color: Colors.red,
                               )),
-                          title: Text("Please veriy your Email"),
+                          title: Text("Please veriy your email"),
                           actions: <Widget>[
                             FlatButton(
                               child: Text(
@@ -206,23 +184,24 @@ class _LogInState extends State<LogIn> {
                                 style: TextStyle(color: Colors.red),
                               ),
                               onPressed: () {
-                                setState(() {
-                                  loginLoading = false;
-                                });
                                 Navigator.pop(context);
                               },
                             )
                           ],
                         ));
+                    setState(() {
+                      loginLoading = false;
+                    });
                   }
 
                   if (user != null && user.emailVerified) {
+                    print("Verified");
                     var prefs = await SharedPreferences.getInstance();
                     final userData = json.encode(
                       {
                         'userEmail': user.email,
                         'userUid': user.uid,
-                        'password': passwordController.text,
+                        'password': _passwordController.text,
                       },
                     );
                     prefs.setString('userData', userData);
@@ -251,12 +230,26 @@ class _LogInState extends State<LogIn> {
                                     userpic: value.documents[0]["userImage"],
                                     userDocid: value.documents[0].documentID)
                               });
+
+                      if (userDetails.firstTime == true &&
+                          userDetails.verified == false) {
+                        await Firestore.instance
+                            .collection("Users")
+                            .document(userDetails.userDocid)
+                            .update({"verified": true, "firstTime": false});
+
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AfterSignup()));
+                        setState(() {
+                          loginLoading = false;
+                        });
+                      }
                     } catch (e) {
                       print(e);
                     }
 
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => Home()));
                     setState(() {
                       loginLoading = false;
                     });
@@ -382,7 +375,7 @@ Widget _textInput(String label, IconData icon) {
     ),
     //padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
     child: TextFormField(
-      controller: emailController,
+      controller: _emailController,
       validator: (String val) {
         if (val.isEmpty) {
           return 'Email must not be empty';

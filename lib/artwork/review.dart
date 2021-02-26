@@ -141,7 +141,7 @@ class _CommentScreenState extends State<CommentScreen> {
       'time': DateTime.now().toString()
     });
 //reviewed
-
+    String points = '';
     await FirebaseFirestore.instance
         .collection('Users')
         .document(userDetails.userDocid)
@@ -159,16 +159,24 @@ class _CommentScreenState extends State<CommentScreen> {
                     'userUid': singleartwork.userUid,
                     'userDocid': singleartwork.userDocid,
                   }),
+
                   await FirebaseFirestore.instance
                       .collection('Users')
-                      .document(userDetails.userDocid)
-                      .update({
-                    "points": (int.parse(userDetails.points) + 1).toString()
-                  }),
+                      .where("userUid", isEqualTo: singleartwork.userUid)
+                      .getDocuments()
+                      .then((value) => {points = value.documents[0]["points"]}),
+                  //     .update({
+                  //   "points": (int.parse(singleartwork.points) + 1).toString()
+                  // }
+
+                  await FirebaseFirestore.instance
+                      .collection('Users')
+                      .document(singleartwork.userDocid)
+                      .update({"points": (int.parse(points) + 1).toString()}),
                 }
             });
 
-    userDetails.points = (int.parse(userDetails.points) + 1).toString();
+    // userDetails.points = (int.parse(userDetails.points) + 1).toString();
 
     ///supporters
 
@@ -205,41 +213,6 @@ class _CommentScreenState extends State<CommentScreen> {
             userId: userDetails.userUid));
     });
   }
-
-  // addComment(String comment) async {
-  //   _commentController.clear();
-  //   await FirebaseFirestore.instance
-  //       .collection("Posts")
-  //       .document(cmntdocid)
-  //       .collection("Comments")
-  //       .add({
-  //     "userName": userDetails.username,
-  //     "userUid": userDetails.userUid,
-  //     "userImage": userDetails.userpic,
-  //     "userComment": comment
-  //   });
-
-  //   await FirebaseFirestore.instance
-  //       .collection("Posts")
-  //       .document(cmntdocid)
-  //       .update({"commentsNumber": (int.parse(cmntNumbers) + 1).toString()});
-  //   int cmnts = int.parse(posts[indexcmnt].commentsNumber) + 1;
-
-  //   posts[indexcmnt].commentsNumber = cmnts.toString();
-  //   setState(() {});
-
-  //   // add comment to the current listview for an optimistic update
-  //   print(widget.postId);
-  //   setState(() {
-  //     fetchedComments = List.from(fetchedComments)
-  //       ..add(Comment(
-  //           username: userDetails.username,
-  //           comment: comment,
-  //           timestamp: Timestamp.now(),
-  //           avatarUrl: userDetails.userpic,
-  //           userId: userDetails.userUid));
-  //   });
-  // }
 }
 
 class Comment extends StatelessWidget {
@@ -329,7 +302,7 @@ class Comment extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 8),
                           child: Text(
                             comment,
-                            style: TextStyle(fontSize: 15, color: Colors.black),
+                            style: TextStyle(fontSize: 15, color: Colors.white),
                           ),
                         ),
                       ],

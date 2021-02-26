@@ -44,6 +44,7 @@ class _UploadArtState extends State<UploadArt> {
         Asset asset = images[index];
         return AssetThumb(
           asset: asset,
+          quality: 40,
           width: 300,
           height: 300,
         );
@@ -169,11 +170,32 @@ class _UploadArtState extends State<UploadArt> {
                     ),
                     onTap: loadAssets,
                   ),
-                  //SizedBox(height: 30),
-                  //buildGridView(),
                   SizedBox(height: 30),
                   _input('Title *', tittleController),
-                  _input('Price *', priceController),
+                  // _input('Price *', priceController),
+                  Container(
+                    margin: EdgeInsets.only(top: 10),
+                    decoration: BoxDecoration(
+                      border: Border(bottom: BorderSide(color: Colors.black)),
+                    ),
+                    child: TextFormField(
+                      keyboardType:
+                          TextInputType.numberWithOptions(decimal: true),
+                      controller: priceController,
+                      validator: (String val) {
+                        if (val.trim().isEmpty) {
+                          return "Price in Euros" + " must not be empty";
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelStyle:
+                            TextStyle(fontSize: 16, color: Colors.black),
+                        border: InputBorder.none,
+                        labelText: "Price in Euros",
+                      ),
+                    ),
+                  ),
                   _input('Size *', sizeController),
                   _input('Technique *', techniqueController),
                   _input('Year *', yearContoller),
@@ -196,10 +218,38 @@ class _UploadArtState extends State<UploadArt> {
                             ),
                             onPressed: () {
                               if (_formKey.currentState.validate()) {
-                                uploadArt();
+                                if (int.parse(priceController.text.toString()) >
+                                        100 ||
+                                    int.parse(priceController.text.toString()) <
+                                        0) {
+                                  showDialog(
+                                      context: context,
+                                      child: AlertDialog(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                new BorderRadius.circular(18.0),
+                                            side: BorderSide(
+                                              color: Colors.red[400],
+                                            )),
+                                        title: Text(
+                                            "Price Must Be Between 0-100 Euros"),
+                                        actions: <Widget>[
+                                          FlatButton(
+                                            child: Text(
+                                              "OK",
+                                              style: TextStyle(
+                                                  color: Colors.red[400]),
+                                            ),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                          )
+                                        ],
+                                      ));
+                                } else {
+                                  uploadArt();
+                                }
                               }
-                              // Navigator.push(context,
-                              //     MaterialPageRoute(builder: (context) => AfterSignup()));
                             },
                           ),
                   ),
@@ -223,6 +273,7 @@ class _UploadArtState extends State<UploadArt> {
         imageUrls.add(downloadUrl.toString());
         if (imageUrls.length == images.length) {
           await Firebase.initializeApp();
+
           await FirebaseFirestore.instance.collection("ArtWork").add({
             'tittle': tittleController.text,
             'size': sizeController.text,
@@ -235,20 +286,23 @@ class _UploadArtState extends State<UploadArt> {
             'sold': false,
             'imageUrls': imageUrls,
             'buyerdocId': '',
-            'buyerUid': ' '
+            'buyerUid': ' ',
+            'dateTime': DateTime.now().toString(),
           });
           print(3);
           if (!firstTimeForartWork) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => MyGallery()),
-            );
+            listArtWorkDetail.clear();
+            print(listArtWorkDetail);
+            Navigator.pop(context);
           }
-          if (firstTimeForartWork)
+          if (firstTimeForartWork) {
+            listArtWorkDetail.clear();
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => Home()),
             );
+          }
+
           print(4);
         }
       }).catchError((err) {
@@ -270,12 +324,10 @@ class _UploadArtState extends State<UploadArt> {
 
 Widget _input(String label, controller) {
   return Container(
-    //height: 60,
     margin: EdgeInsets.only(top: 10),
     decoration: BoxDecoration(
       border: Border(bottom: BorderSide(color: Colors.black)),
     ),
-    //padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
     child: TextFormField(
       controller: controller,
       validator: (String val) {
@@ -289,7 +341,6 @@ Widget _input(String label, controller) {
         return null;
       },
       decoration: InputDecoration(
-        //prefixIcon: Icon(icon, color: Colors.blue,),
         labelStyle: TextStyle(fontSize: 16, color: Colors.black),
         border: InputBorder.none,
         labelText: label,

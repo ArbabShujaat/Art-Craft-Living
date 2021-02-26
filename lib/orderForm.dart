@@ -137,6 +137,8 @@ class _OrderFormState extends State<OrderForm> {
               orderUserDetaisl = UserDetails(
                 instagram: value.documents[0]["instagram"],
                 about: value.documents[0]["userAbout"],
+                verified: value.documents[0]["verified"],
+                firstTime: value.documents[0]["firstTime"],
                 userEmail: value.documents[0]["userEmail"],
                 bonusCredit: value.documents[0]["bonusCredit"],
                 soldCredit: value.documents[0]["soldCredit"],
@@ -218,7 +220,11 @@ class _OrderFormState extends State<OrderForm> {
     await FirebaseFirestore.instance
         .collection('ArtWork')
         .document(singleartwork.docId)
-        .update({'sold': true});
+        .update({
+      'sold': true,
+      'buyerUid': userDetails.userUid,
+      'buyerdocId': userDetails.userDocid
+    });
     print('6');
     setState(() {
       orderLoading = false;

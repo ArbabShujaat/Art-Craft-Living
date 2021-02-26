@@ -215,7 +215,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
             Text('15. TERMINATION AND SURVIVAL'),
             SizedBox(height: 5),
             Text(
-                'You may terminate these Terms of Use at any time by deleting your profile and ceasing to use the App, but if you use the App again in the future, then you will have agreed to these Terms of Use again. Sections 6, 7, 8, 12, 13, 14, 16 and 17 survive any termination or expiration of these Terms of Use. We reserve the right to modify, suspend, or terminate your access to our Services anytime for suspicious or unlawful conduct, including for fraud.'),
+                'You may terminate these Terms of Use at any time by deleting and ceasing to use the App, but if you use the App again in the future, then you will have agreed to these Terms of Use again. Sections 6, 7, 8, 12, 13, 14, 16 and 17 survive any termination or expiration of these Terms of Use. We reserve the right to modify, suspend, or terminate your access to our Services anytime for suspicious or unlawful conduct, including for fraud.'),
             SizedBox(height: 10),
             Text('16. GENERAL'),
             SizedBox(height: 2),

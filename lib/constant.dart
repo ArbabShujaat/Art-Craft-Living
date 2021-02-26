@@ -12,6 +12,7 @@ const String AFTER_SIGNUP = 'after_signup';
 const String EDIT_PROFILE = 'edit_profile';
 const String MY_GALLERY = 'my_gallery';
 const String USER_PROFILE = 'user_profile';
+const String SUPPORTER_USER_PROFILE = 'supporter_user_profile';
 const String MY_ARTWORK = 'my_artwork';
 const String COMMUNITY_SALE = 'community_sale';
 const String SOLD_ARTWORKS = 'sold_artworks';
@@ -27,6 +28,7 @@ const String PAYMENT = 'payment';
 const String BUYAPP = 'buyapp';
 const String HELP = 'help';
 const String EXHIBITION = 'exhibition';
+const String PAYMENTMAIN = 'paymentmain';
 
 bool firstTimeForedit = false;
 bool firstTimeForartWork = false;

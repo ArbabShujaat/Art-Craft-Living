@@ -41,6 +41,7 @@ class _PaymentProofScreenSoldState extends State<PaymentProofScreenSold> {
         Asset asset = images[index];
         return AssetThumb(
           asset: asset,
+          quality: 40,
           width: 300,
           height: 300,
         );
@@ -238,21 +239,21 @@ class _PaymentProofScreenSoldState extends State<PaymentProofScreenSold> {
           String emailBody = "Payment Requests for Purchased art: " +
               "\nCustomerName : " +
               userDetails.username +
-              "\nCustomerEmail : " +
+              "\n\nCustomerEmail : " +
               userDetails.userEmail +
-              "\nCustomerPic : " +
+              "\n\nCustomerPic : " +
               userDetails.userpic +
-              "\nAmount to be paid : " +
+              "\n\nAmount to be paid : " +
               artpriceController.text +
-              "\nProof Pic : " +
+              "\n\nProof Pic : " +
               imageUrls[0] +
-              "\nPaypalAccountLink : " +
+              "\n\nPaypalAccountLink : " +
               accountLinkController.text;
 
           final Email email = Email(
             body: emailBody,
             subject: 'Payment Requests for Sold art',
-            recipients: ['artcraftliving4@gmail.com'],
+            recipients: ['info@artcraftliving.com'],
             isHTML: false,
           );
           await FlutterEmailSender.send(email);

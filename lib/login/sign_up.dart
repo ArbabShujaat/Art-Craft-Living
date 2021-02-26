@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:artCraftLiving/Model/model.dart';
+import 'package:artCraftLiving/home_screen.dart';
 import 'package:artCraftLiving/login/buyapp.dart';
+import 'package:artCraftLiving/login/login.dart';
 import 'package:artCraftLiving/menu/help/privacypolicy.dart';
 import 'package:artCraftLiving/menu/help/termsandconditions.dart';
 import 'package:artCraftLiving/profiles/after_signup.dart';
@@ -18,6 +20,19 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant.dart';
+import '../main.dart';
+import 'buyapp2.dart';
+import 'login2.dart';
+
+bool fromSignUp = false;
+String imageUrl;
+
+TextEditingController fullnameController = TextEditingController();
+TextEditingController emailController = TextEditingController();
+TextEditingController passwordController = TextEditingController();
+TextEditingController confirmpasswordController = TextEditingController();
+TextEditingController aboutartistContoller = TextEditingController();
+TextEditingController instagramUsernameContoller = TextEditingController();
 
 // import 'package:country_code_picker/country_code_picker.dart';
 class SignUp extends StatefulWidget {
@@ -45,14 +60,6 @@ class _SignUpState extends State<SignUp> {
     super.initState();
   }
 
-  String imageUrl;
-
-  TextEditingController fullnameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmpasswordController = TextEditingController();
-  TextEditingController aboutartistContoller = TextEditingController();
-  TextEditingController instagramUsernameContoller = TextEditingController();
   var _formKey = GlobalKey<FormState>();
 
   @override
@@ -82,14 +89,17 @@ class _SignUpState extends State<SignUp> {
                 InkWell(
                   child: pic(),
                   onTap: () async {
-                    _image = await pickImage(context, ImageSource.gallery);
+                    _image = await pickImage(
+                      context,
+                      ImageSource.gallery,
+                    );
                     setState(() {
                       piccheck = true;
                     });
                     if (_image != null) {
                       final FirebaseStorage _storgae = FirebaseStorage(
                           storageBucket:
-                              'gs://artcraftliving-b287b.appspot.com');
+                              'gs://artcraftliving-9582b.appspot.com');
                       StorageUploadTask uploadTask;
                       String filePath = '${DateTime.now()}.png';
                       uploadTask =
@@ -246,10 +256,21 @@ class _SignUpState extends State<SignUp> {
                                   'Sign Up',
                                   style: TextStyle(fontSize: 17),
                                 ),
-                                onPressed: () {
+                                onPressed: () async {
                                   if (imagecheck &&
                                       _formKey.currentState.validate()) {
-                                    signUp();
+                                    setState(() {
+                                      signupLoading = true;
+                                    });
+                                    await signUp(context);
+                                    setState(() {
+                                      signupLoading = false;
+                                    });
+
+                                    // Navigator.of(context).pushAndRemoveUntil(
+                                    //     MaterialPageRoute(
+                                    //         builder: (context) => BuyApp()),
+                                    //     (Route<dynamic> route) => false);
                                   } else {
                                     imagecheck == false
                                         ? showDialog(
@@ -351,7 +372,7 @@ class _SignUpState extends State<SignUp> {
   Future<File> pickImage(BuildContext context, ImageSource source) async {
     File selected = await ImagePicker.pickImage(
       source: source,
-      imageQuality: 20,
+      imageQuality: 13,
     );
     return selected;
   }
@@ -368,177 +389,6 @@ class _SignUpState extends State<SignUp> {
             radius: 40,
             backgroundColor: Colors.grey[300],
           );
-  }
-
-  Future<void> signUp() async {
-    setState(() {
-      signupLoading = true;
-    });
-    print(emailController.text);
-    print(passwordController.text);
-
-    final bool isValid = EmailValidator.validate(emailController.text);
-    if (!isValid) {
-      return 0;
-    }
-    try {
-      final User user =
-          (await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      ))
-              .user;
-
-      print(1);
-
-      if (user != null) {
-        print(2);
-        print(2);
-
-        List<String> likes = [""];
-
-        Firebase.initializeApp();
-        await FirebaseFirestore.instance.collection("Users").add({
-          'userEmail': emailController.text,
-          'userName': fullnameController.text,
-          'userUid': user.uid,
-          'userImage': imageUrl,
-          'userAbout': aboutartistContoller.text,
-          'instagram': instagramUsernameContoller.text,
-          'bonusCredit': "0",
-          'soldCredit': "0",
-          'points': "0",
-        });
-        print(3);
-
-        await Firestore.instance
-            .collection("Users")
-            .where("userEmail", isEqualTo: emailController.text)
-            .getDocuments()
-            .then((value) => {
-                  userDetails = UserDetails(
-                      userEmail: value.documents[0]["userEmail"],
-                      about: value.documents[0]["userAbout"],
-                      bonusCredit: value.documents[0]["bonusCredit"],
-                      soldCredit: value.documents[0]["soldCredit"],
-                      points: value.documents[0]["points"],
-                      userUid: value.documents[0]["userUid"],
-                      username: value.documents[0]["userName"],
-                      userpic: value.documents[0]["userImage"],
-                      instagram: value.documents[0]["instagram"],
-                      userDocid: value.documents[0].documentID)
-                });
-
-        print(4);
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => AfterSignup()),
-            (Route<dynamic> route) => false);
-
-        setState(() {
-          signupLoading = false;
-        });
-      }
-    } catch (signUpError) {
-      setState(() {
-        signupLoading = false;
-      });
-
-      //Error handling
-      if (signUpError is PlatformException) {
-        if (signUpError.code == 'ERROR_EMAIL_ALREADY_IN_USE') {
-          showDialog(
-              context: context,
-              child: AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(18.0),
-                    side: BorderSide(
-                      color: Colors.red[400],
-                    )),
-                title: Text("Email already in use"),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text(
-                      "OK",
-                      style: TextStyle(color: Colors.red[400]),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  )
-                ],
-              ));
-        }
-
-        if (signUpError.code == 'ERROR_WEAK_PASSWORD') {
-          showDialog(
-              context: context,
-              child: AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(18.0),
-                    side: BorderSide(
-                      color: Colors.red[400],
-                    )),
-                title: Text("Weak Password"),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text(
-                      "OK",
-                      style: TextStyle(color: Colors.red[400]),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  )
-                ],
-              ));
-        }
-
-        if (signUpError.code == 'ERROR_INVALID_EMAIL') {
-          showDialog(
-              context: context,
-              child: AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(18.0),
-                    side: BorderSide(
-                      color: Colors.red[400],
-                    )),
-                title: Text("Invalid Email"),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text(
-                      "OK",
-                      style: TextStyle(color: Colors.red[400]),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  )
-                ],
-              ));
-        }
-      }
-      showDialog(
-          context: context,
-          child: AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(18.0),
-                side: BorderSide(
-                  color: Colors.red[400],
-                )),
-            title: Text(signUpError),
-            actions: <Widget>[
-              FlatButton(
-                child: Text(
-                  "OK",
-                  style: TextStyle(color: Colors.red[400]),
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
-            ],
-          ));
-    }
   }
 }
 
@@ -570,4 +420,238 @@ Widget _input(controller, String label, IconData icon) {
       ),
     ),
   );
+}
+
+Future<void> signUp(BuildContext context) async {
+  print(emailController.text);
+  print(passwordController.text);
+
+  final bool isValid = EmailValidator.validate(emailController.text);
+  if (!isValid) {
+    return 0;
+  }
+  try {
+    final User user =
+        (await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: emailController.text,
+      password: passwordController.text,
+    ))
+            .user;
+
+    try {
+      await user.sendEmailVerification();
+    } catch (e) {
+      print("An error occured while trying to send email verification");
+      print(e.message);
+    }
+
+    print(1);
+
+    if (user != null) {
+      print(2);
+      print(2);
+
+      Firebase.initializeApp();
+      await FirebaseFirestore.instance.collection("Users").add({
+        'userEmail': emailController.text,
+        'userName': fullnameController.text,
+        'userUid': user.uid,
+        'verified': false,
+        'firstTime': true,
+        'userImage': imageUrl,
+        'userAbout': aboutartistContoller.text,
+        'instagram': instagramUsernameContoller.text,
+        'bonusCredit': "0",
+        'soldCredit': "0",
+        'points': "0",
+      });
+      print(3);
+
+      await Firestore.instance
+          .collection("Users")
+          .where("userEmail", isEqualTo: emailController.text)
+          .getDocuments()
+          .then((value) => {
+                userDetails = UserDetails(
+                    userEmail: value.documents[0]["userEmail"],
+                    about: value.documents[0]["userAbout"],
+                    verified: value.documents[0]["verified"],
+                    firstTime: value.documents[0]["firstTime"],
+                    bonusCredit: value.documents[0]["bonusCredit"],
+                    soldCredit: value.documents[0]["soldCredit"],
+                    points: value.documents[0]["points"],
+                    userUid: value.documents[0]["userUid"],
+                    username: value.documents[0]["userName"],
+                    userpic: value.documents[0]["userImage"],
+                    instagram: value.documents[0]["instagram"],
+                    userDocid: value.documents[0].documentID)
+              });
+
+      print(4);
+
+      fromSignUp = true;
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => LogIn2()),
+      );
+
+      // setState(() {
+      //   signupLoading = false;
+      // });
+      return 0;
+    }
+  } catch (signUpError) {
+    // setState(() {
+    //   signupLoading = false;
+    // });
+
+    print("Hiiiii1");
+    showDialog(
+        context: context,
+        child: AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(18.0),
+              side: BorderSide(
+                color: Colors.red[400],
+              )),
+          title: Text(signUpError.toString()),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                "OK",
+                style: TextStyle(color: Colors.red[400]),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                return 0;
+              },
+            )
+          ],
+        ));
+    return 0;
+    print("Hiiiii2");
+
+    //Error handling
+    if (signUpError is PlatformException) {
+      showDialog(
+          context: context,
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(18.0),
+                side: BorderSide(
+                  color: Colors.red[400],
+                )),
+            title: Text(signUpError.message),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(
+                  "OK",
+                  style: TextStyle(color: Colors.red[400]),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                  return 0;
+                },
+              )
+            ],
+          ));
+      if (signUpError.code == 'ERROR_EMAIL_ALREADY_IN_USE') {
+        showDialog(
+            context: context,
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(18.0),
+                  side: BorderSide(
+                    color: Colors.red[400],
+                  )),
+              title: Text("Email already in use"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text(
+                    "OK",
+                    style: TextStyle(color: Colors.red[400]),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    return 0;
+                  },
+                )
+              ],
+            ));
+      }
+
+      if (signUpError.code == 'ERROR_WEAK_PASSWORD') {
+        showDialog(
+            context: context,
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(18.0),
+                  side: BorderSide(
+                    color: Colors.red[400],
+                  )),
+              title: Text("Weak Password"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text(
+                    "OK",
+                    style: TextStyle(color: Colors.red[400]),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    return 0;
+                  },
+                )
+              ],
+            ));
+      }
+
+      if (signUpError.code == 'ERROR_INVALID_EMAIL') {
+        showDialog(
+            context: context,
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(18.0),
+                  side: BorderSide(
+                    color: Colors.red[400],
+                  )),
+              title: Text("Invalid Email"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text(
+                    "OK",
+                    style: TextStyle(color: Colors.red[400]),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    return 0;
+                  },
+                )
+              ],
+            ));
+        return 0;
+      }
+    }
+    showDialog(
+        context: context,
+        child: AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(18.0),
+              side: BorderSide(
+                color: Colors.red[400],
+              )),
+          title: Text(signUpError),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                "OK",
+                style: TextStyle(color: Colors.red[400]),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                return 0;
+              },
+            )
+          ],
+        ));
+  }
 }

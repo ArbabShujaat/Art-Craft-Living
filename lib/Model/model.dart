@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 UserDetails userDetails;
 List<UserDetails> listUserDetail = [];
+List<UserDetails> supportersList = [];
 
 ///User
 class UserDetails {
@@ -12,6 +13,9 @@ class UserDetails {
   final String username;
   final String userDocid;
   final String instagram;
+  bool verified;
+
+  bool firstTime;
 
   String bonusCredit;
   String soldCredit;
@@ -22,6 +26,8 @@ class UserDetails {
     @required this.userDocid,
     @required this.about,
     @required this.instagram,
+    @required this.verified,
+    @required this.firstTime,
     @required this.bonusCredit,
     @required this.soldCredit,
     @required this.points,

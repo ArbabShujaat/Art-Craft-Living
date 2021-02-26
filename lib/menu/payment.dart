@@ -127,6 +127,9 @@ class _PaymentState extends State<Payment> {
                                       soldCredit: value.documents[0]
                                           ["soldCredit"],
                                       points: value.documents[0]["points"],
+                                      verified: value.documents[0]["verified"],
+                                      firstTime: value.documents[0]
+                                          ["firstTime"],
                                       userUid: value.documents[0]["userUid"],
                                       username: value.documents[0]["userName"],
                                       userpic: value.documents[0]["userImage"],
@@ -234,6 +237,10 @@ class _PaymentState extends State<Payment> {
                                                 ["instagram"],
                                             about: value.documents[0]
                                                 ["userAbout"],
+                                            verified: value.documents[0]
+                                                ["verified"],
+                                            firstTime: value.documents[0]
+                                                ["firstTime"],
                                             userEmail: value.documents[0]
                                                 ["userEmail"],
                                             bonusCredit: value.documents[0]

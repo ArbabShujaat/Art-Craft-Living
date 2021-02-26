@@ -16,7 +16,7 @@ class _MySupportersState extends State<MySupporters> {
   bool _loading = true;
   @override
   Future<void> didChangeDependencies() async {
-    listUserDetail.clear();
+    supportersList.clear();
 
     await FirebaseFirestore.instance
         .collection("Users")
@@ -36,8 +36,8 @@ class _MySupportersState extends State<MySupporters> {
               .then((value) => {
                     for (int i = 0; i < value.documents.length; i++)
                       {
-                        listUserDetail.add(UserDetails(
-                          instagram: value.documents[0]["instagram"],
+                        supportersList.add(UserDetails(
+                          instagram: value.documents[i]["instagram"],
                           about: value.documents[i]["userAbout"],
                           userEmail: value.documents[i]["userEmail"],
                           bonusCredit: value.documents[i]["bonusCredit"],
@@ -45,6 +45,8 @@ class _MySupportersState extends State<MySupporters> {
                           points: value.documents[i]["points"],
                           userUid: value.documents[i]["userUid"],
                           username: value.documents[i]["userName"],
+                          verified: value.documents[i]["verified"],
+                          firstTime: value.documents[i]["firstTime"],
                           userpic: value.documents[i]["userImage"],
                           userDocid: value.documents[i].documentID,
                         ))
@@ -86,20 +88,23 @@ class _MySupportersState extends State<MySupporters> {
               )
             : ListView.builder(
                 scrollDirection: Axis.vertical,
-                itemCount: listUserDetail.length,
+                itemCount: supportersList.length,
                 itemBuilder: (context, index) {
                   return Column(
                     children: [
                       InkWell(
                         onTap: () {
-                          userIndex = index;
-                          Navigator.pushNamed(context, USER_PROFILE);
+                          if (index == 0) {
+                            userIndex = 0;
+                          } else
+                            userIndex = index;
+                          Navigator.pushNamed(context, SUPPORTER_USER_PROFILE);
                         },
                         child: member(
-                            listUserDetail[index].userpic,
-                            listUserDetail[index].username,
-                            listUserDetail[index].about,
-                            USER_PROFILE,
+                            supportersList[index].userpic,
+                            supportersList[index].username,
+                            supportersList[index].about,
+                            SUPPORTER_USER_PROFILE,
                             context),
                       ),
                       Divider(),

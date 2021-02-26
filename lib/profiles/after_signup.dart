@@ -38,8 +38,11 @@ class _AfterSignupState extends State<AfterSignup> {
           child: ListView(
             children: [
               Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CircleAvatar(
                         backgroundColor: Colors.grey[300],
@@ -66,69 +69,101 @@ class _AfterSignupState extends State<AfterSignup> {
                                       height: 100,
                                       child: AutoSizeText(
                                         userDetails.about,
-                                        style: TextStyle(fontSize: 18.0),
+                                        style: TextStyle(
+                                            fontSize: 13.0,
+                                            color: Colors.grey[600]),
                                         maxLines: 100,
                                       ),
                                     ),
                                   ),
                                 ),
-                                InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      _showabout = false;
-                                    });
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        'See less',
-                                        style: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Icon(
-                                        Icons.arrow_drop_up,
-                                        color: Colors.grey,
-                                      )
-                                    ],
-                                  ),
-                                )
+                                // InkWell(
+                                //   onTap: () {
+                                //     setState(() {
+                                //       _showabout = false;
+                                //     });
+                                //   },
+                                //   child: Row(
+                                //     children: [
+                                //       Text(
+                                //         'See less',
+                                //         style: TextStyle(
+                                //             color: Colors.grey[600],
+                                //             fontSize: 13,
+                                //             fontWeight: FontWeight.bold),
+                                //       ),
+                                //       Icon(
+                                //         Icons.arrow_drop_up,
+                                //         color: Colors.grey[600],
+                                //       )
+                                //     ],
+                                //   ),
+                                // )
                               ],
                             ),
                           if (!_showabout)
                             Container(
-                              width: MediaQuery.of(context).size.width / 1.8,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width - 300,
-                                    height: 20,
-                                    child: AutoSizeText(
-                                      userDetails.about,
-                                      style: TextStyle(fontSize: 18.0),
-                                      maxLines: 1,
+                              height: 50,
+                              width: MediaQuery.of(context).size.width / 2,
+                              child: LayoutBuilder(builder: (context, size) {
+                                final span = TextSpan(text: userDetails.about);
+                                final tp = TextPainter(
+                                    text: span,
+                                    maxLines: 1,
+                                    textDirection: TextDirection.rtl);
+                                tp.layout(maxWidth: size.maxWidth);
+
+                                if (tp.didExceedMaxLines) {
+                                  // The text has more than three lines.
+                                  // TODO: display the prompt message
+
+                                  return Container(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              3,
+                                          child: Text(
+                                            userDetails.about,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                                fontSize: 13.0,
+                                                color: Colors.grey[600]),
+                                          ),
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              _showabout = true;
+                                            });
+                                          },
+                                          child: Text(
+                                            '...See more',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        )
+                                      ],
                                     ),
-                                  ),
-                                  Spacer(),
-                                  InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        _showabout = true;
-                                      });
-                                    },
-                                    child: Text(
-                                      'See more',
-                                      style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.bold),
+                                  );
+                                } else {
+                                  return Text(
+                                    userDetails.about,
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontSize: 13,
                                     ),
-                                  )
-                                ],
-                              ),
+                                  );
+                                }
+                              }),
                             ),
                         ],
                       ),

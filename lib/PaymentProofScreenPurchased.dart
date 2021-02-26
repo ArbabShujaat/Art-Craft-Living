@@ -41,6 +41,7 @@ class _PaymentProofScreenPuchasedState
         Asset asset = images[index];
         return AssetThumb(
           asset: asset,
+          quality: 40,
           width: 300,
           height: 300,
         );
@@ -54,7 +55,7 @@ class _PaymentProofScreenPuchasedState
 
     try {
       resultList = await MultiImagePicker.pickImages(
-        maxImages: 300,
+        maxImages: 10,
         enableCamera: true,
         selectedAssets: images,
         cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
@@ -221,21 +222,21 @@ class _PaymentProofScreenPuchasedState
           String emailBody = "Payment Requests for Purchased art: " +
               "\nCustomerName : " +
               userDetails.username +
-              "\nCustomerEmail : " +
+              "\n\nCustomerEmail : " +
               userDetails.userEmail +
-              "\nCustomerPic : " +
+              "\n\nCustomerPic : " +
               userDetails.userpic +
-              "\nAmount to be paid : " +
+              "\n\nAmount to be paid : " +
               bonusAmount +
-              "\nProof Pic : " +
+              "\n\nProof Pic : " +
               imageUrls[0] +
-              "\nPaypalAccountLink : " +
+              "\n\nPaypalAccountLink : " +
               tittleController.text;
 
           final Email email = Email(
             body: emailBody,
             subject: 'Payment Requests for Purchased art',
-            recipients: ['artcraftliving4@gmail.com'],
+            recipients: ['info@artcraftliving.com'],
             isHTML: false,
           );
 

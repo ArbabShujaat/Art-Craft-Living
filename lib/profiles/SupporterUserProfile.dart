@@ -10,14 +10,14 @@ import 'package:url_launcher/url_launcher.dart';
 
 int artworkIndex = 0;
 
-class UserProfile extends StatefulWidget {
-  UserProfile({Key key}) : super(key: key);
+class SupportedUserProfile extends StatefulWidget {
+  SupportedUserProfile({Key key}) : super(key: key);
 
   @override
-  _UserProfileState createState() => _UserProfileState();
+  _SupportedUserProfileState createState() => _SupportedUserProfileState();
 }
 
-class _UserProfileState extends State<UserProfile> {
+class _SupportedUserProfileState extends State<SupportedUserProfile> {
   bool _loading = true;
   bool _showabout = false;
   @override
@@ -32,7 +32,7 @@ class _UserProfileState extends State<UserProfile> {
               for (int i = 0; i < value.documents.length; i++)
                 {
                   if (value.documents[i]["userUid"] ==
-                      listUserDetail[userIndex].userUid)
+                      supportersList[userIndex].userUid)
                     listArtWorkDetail.add(ArtWorks(
                       pics: value.documents[i]["imageUrls"],
                       tittle: value.documents[i]["tittle"],
@@ -44,7 +44,7 @@ class _UserProfileState extends State<UserProfile> {
                       userUid: value.documents[i]["userUid"],
                       price: value.documents[i]["price"],
                       sold: value.documents[i]["sold"],
-                      userDocid: listUserDetail[userIndex].userDocid,
+                      userDocid: supportersList[userIndex].userDocid,
                       buyeruserUid: value.documents[i]["buyerUid"],
                       buyerdocId: value.documents[i]["buyerdocId"],
                     ))
@@ -82,7 +82,7 @@ class _UserProfileState extends State<UserProfile> {
                 CircleAvatar(
                   backgroundColor: Colors.grey[300],
                   backgroundImage:
-                      NetworkImage(listUserDetail[userIndex].userpic),
+                      NetworkImage(supportersList[userIndex].userpic),
                   radius: 40,
                 ),
                 SizedBox(width: 20),
@@ -91,7 +91,7 @@ class _UserProfileState extends State<UserProfile> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      listUserDetail[userIndex].username,
+                      supportersList[userIndex].username,
                       style: TextStyle(fontSize: 22),
                     ),
                     if (_showabout)
@@ -103,7 +103,7 @@ class _UserProfileState extends State<UserProfile> {
                                 width: MediaQuery.of(context).size.width - 200,
                                 height: 100,
                                 child: AutoSizeText(
-                                  listUserDetail[userIndex].about,
+                                  supportersList[userIndex].about,
                                   style: TextStyle(
                                       fontSize: 13.0, color: Colors.grey[600]),
                                   maxLines: 100,
@@ -137,7 +137,7 @@ class _UserProfileState extends State<UserProfile> {
                         width: MediaQuery.of(context).size.width / 2,
                         child: LayoutBuilder(builder: (context, size) {
                           final span = TextSpan(
-                            text: listUserDetail[userIndex].about,
+                            text: supportersList[userIndex].about,
                           );
                           final tp = TextPainter(
                               text: span,
@@ -158,7 +158,7 @@ class _UserProfileState extends State<UserProfile> {
                                     width:
                                         MediaQuery.of(context).size.width / 3,
                                     child: Text(
-                                      listUserDetail[userIndex].about,
+                                      supportersList[userIndex].about,
                                       maxLines: 1,
                                       style: TextStyle(
                                           fontSize: 13.0,
@@ -184,7 +184,7 @@ class _UserProfileState extends State<UserProfile> {
                             );
                           } else {
                             return Text(
-                              listUserDetail[userIndex].about,
+                              supportersList[userIndex].about,
                               style: TextStyle(
                                   fontSize: 13.0, color: Colors.grey[600]),
                             );
@@ -198,7 +198,7 @@ class _UserProfileState extends State<UserProfile> {
             FlatButton(
                 onPressed: () async {
                   var url = "https://www.instagram.com/" +
-                      listUserDetail[userIndex].instagram +
+                      supportersList[userIndex].instagram +
                       "/";
 
                   if (await canLaunch(url)) {

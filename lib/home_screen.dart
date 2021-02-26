@@ -1,13 +1,16 @@
+import 'dart:io';
+
 import 'package:artCraftLiving/constant.dart';
-import 'package:artCraftLiving/login/login.dart';
+import 'package:artCraftLiving/login/login.dart' as a;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'Model/model.dart';
+import 'login/sign_up.dart';
 
 int userIndex = 0;
 
@@ -23,19 +26,26 @@ class _HomeState extends State<Home> {
   @override
   Future<void> didChangeDependencies() async {
     listUserDetail.clear();
+
     await FirebaseFirestore.instance
         .collection("Users")
+        .where("verified", isEqualTo: true)
 
         // ignore: deprecated_member_use
         .getDocuments()
         .then((value) => {
+              listUserDetail.clear(),
+              print("Hiiiiiiii"),
+              print(value.documents.length),
               for (int i = 0; i < value.documents.length; i++)
                 {
                   if (value.documents[i]["userUid"] != userDetails.userUid)
                     {
                       listUserDetail.add(UserDetails(
-                        instagram: value.documents[0]["instagram"],
+                        instagram: value.documents[i]["instagram"],
                         about: value.documents[i]["userAbout"],
+                        verified: value.documents[i]["verified"],
+                        firstTime: value.documents[i]["firstTime"],
                         userEmail: value.documents[i]["userEmail"],
                         bonusCredit: value.documents[i]["bonusCredit"],
                         soldCredit: value.documents[i]["soldCredit"],
@@ -85,7 +95,10 @@ class _HomeState extends State<Home> {
                     children: [
                       InkWell(
                         onTap: () {
-                          userIndex = index;
+                          if (index == 0) {
+                            userIndex = 0;
+                          } else
+                            userIndex = index;
                           Navigator.pushNamed(context, USER_PROFILE);
                         },
                         child: member(
@@ -150,22 +163,34 @@ class _HomeState extends State<Home> {
                     FirebaseAuth.instance.signOut();
                     var prefs = await SharedPreferences.getInstance();
                     prefs.clear();
-                    final cacheDir = await getTemporaryDirectory();
+                    a.emailController.dispose();
+                    a.passwordController.dispose();
+                    fullnameController.dispose();
+                    emailController.dispose();
+                    passwordController.dispose();
+                    confirmpasswordController.dispose();
+                    aboutartistContoller.dispose();
+                    instagramUsernameContoller.dispose();
+                    a.emailController = TextEditingController();
+                    a.passwordController = TextEditingController();
+                    fullnameController = TextEditingController();
+                    emailController = TextEditingController();
+                    passwordController = TextEditingController();
+                    confirmpasswordController = TextEditingController();
+                    aboutartistContoller = TextEditingController();
+                    instagramUsernameContoller = TextEditingController();
 
-                    listUserDetail.clear();
+                    // final cacheDir = await getTemporaryDirectory();
 
-                    if (cacheDir.existsSync()) {
-                      cacheDir.deleteSync(recursive: true);
-                    }
+                    // if (cacheDir.existsSync()) {
+                    //   cacheDir.deleteSync(recursive: true);
+                    // }
 
-                    final appDir = await getApplicationSupportDirectory();
-
-                    if (appDir.existsSync()) {
-                      appDir.deleteSync(recursive: true);
-                    }
+                    // var appDir = (await getTemporaryDirectory()).path;
+                    // new Directory(appDir).delete(recursive: true);
 
                     Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) => LogIn()),
+                        MaterialPageRoute(builder: (context) => a.LogIn()),
                         (Route<dynamic> route) => false);
                   },
                   elevation: 3,

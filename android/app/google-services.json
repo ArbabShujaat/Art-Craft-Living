@@ -1,43 +1,78 @@
 {
   "project_info": {
-    "project_number": "221314742535",
-    "firebase_url": "https://artcraftliving-b287b.firebaseio.com",
-    "project_id": "artcraftliving-b287b",
-    "storage_bucket": "artcraftliving-b287b.appspot.com"
+    "project_number": "669716801460",
+    "firebase_url": "https://artcraftliving-9582b.firebaseio.com",
+    "project_id": "artcraftliving-9582b",
+    "storage_bucket": "artcraftliving-9582b.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:221314742535:android:8943b84f0cc446270b2da2",
+        "mobilesdk_app_id": "1:669716801460:android:c5421cd6a30a3ca23db4e1",
         "android_client_info": {
           "package_name": "com.ArtCraftLiving.artCraftLiving"
         }
       },
       "oauth_client": [
         {
-          "client_id": "221314742535-gfej3vsitvghdpvps10ob2gf497vjhos.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.ArtCraftLiving.artCraftLiving",
-            "certificate_hash": "f82ff23338f3cf9f479bfd1fb610bb4b748c2f14"
-          }
-        },
-        {
-          "client_id": "221314742535-hv9kgiu7vmbml70f1taapdgdl17abpmu.apps.googleusercontent.com",
+          "client_id": "669716801460-pi7q9b6qbqnf7811naccdl955ne3082n.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDci04kAWbpH-01mSKH0rIDEj5o6BJUZ0Y"
+          "current_key": "AIzaSyBvDE0z39ohg8m2XdgwXda29OPG2egecUQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "221314742535-hv9kgiu7vmbml70f1taapdgdl17abpmu.apps.googleusercontent.com",
+              "client_id": "669716801460-pi7q9b6qbqnf7811naccdl955ne3082n.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "669716801460-mii1vcvml9fc3cbssm5o623f5ug1bhv4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ArtCraftLiving.artCraftLiving"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:669716801460:android:00c0b726b557a17e3db4e1",
+        "android_client_info": {
+          "package_name": "com.org.artcraftliving"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "669716801460-pi7q9b6qbqnf7811naccdl955ne3082n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvDE0z39ohg8m2XdgwXda29OPG2egecUQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "669716801460-pi7q9b6qbqnf7811naccdl955ne3082n.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "669716801460-mii1vcvml9fc3cbssm5o623f5ug1bhv4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ArtCraftLiving.artCraftLiving"
+              }
             }
           ]
         }

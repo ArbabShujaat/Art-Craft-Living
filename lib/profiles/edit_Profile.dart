@@ -74,7 +74,7 @@ class _EditProfileState extends State<EditProfile> {
                       });
                       final FirebaseStorage _storgae = FirebaseStorage(
                           storageBucket:
-                              'gs://artcraftliving-b287b.appspot.com');
+                              'gs://artcraftliving-9582b.appspot.com');
                       StorageUploadTask uploadTask;
                       String filePath = '${DateTime.now()}.png';
                       uploadTask =
@@ -269,7 +269,7 @@ class _EditProfileState extends State<EditProfile> {
   Future<File> pickImage(BuildContext context, ImageSource source) async {
     File selected = await ImagePicker.pickImage(
       source: source,
-      imageQuality: 20,
+      imageQuality: 13,
     );
     return selected;
   }
@@ -359,6 +359,8 @@ class _EditProfileState extends State<EditProfile> {
                   bonusCredit: value.documents[0]["bonusCredit"],
                   soldCredit: value.documents[0]["soldCredit"],
                   points: value.documents[0]["points"],
+                  verified: value.documents[0]["verified"],
+                  firstTime: value.documents[0]["firstTime"],
                   userUid: value.documents[0]["userUid"],
                   username: value.documents[0]["userName"],
                   userpic: value.documents[0]["userImage"],
